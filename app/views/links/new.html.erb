@@ -1,0 +1,8 @@
+<h3>Generate short link:</h3>
+<form action="/links" method="post">
+  <input type="text" name="link">
+  <input type="submit">
+</form>
+<% if @response %>
+  <p>Your url: <%= link_to nil, "#{ENV['MY_HOST']}/links/#{@response['link']['short_key']}" %></p>
+<% end %>
