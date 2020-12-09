@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-client
+  name: k8s-client
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: k8s-client
+  template:
+    metadata:
+      labels:
+        app: k8s-client
+    spec:
+      containers:
+        - env:
+            - name: API_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: API_HOST
+                  name: app-configmap
+            - name: MY_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: MY_HOST
+                  name: app-configmap
+          image: lequangcanh/k8s_client:0.0.1
+          name: k8s-client
+          ports:
+            - containerPort: 3000
+          resources: {}
+          stdin: true
+          tty: true
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: k8s-client
+  name: k8s-client
+spec:
+  type: NodePort
+  ports:
+    - name: "3000"
+      port: 80
+      targetPort: 3000
+  selector:
+    app: k8s-client
